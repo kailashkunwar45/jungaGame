@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ranas of Nepal: Hanuman Dhoka Living District Sandbox</title>
+    <!-- Google Fonts for premium cinematic look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=Spectral:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Shifting Weather & Time overlays -->
+    <div id="weather-monsoon-layer" class="weather-overlay"></div>
+    <div id="weather-fog-layer" class="weather-overlay"></div>
+    <div id="tod-tint-layer" class="tod-overlay"></div>
+
+    <!-- Candle flickers representing visual fire lights -->
+    <div class="candle-glow glow-left"></div>
+    <div class="candle-glow glow-right"></div>
+
+    <!-- AUTH GATEWAY OVERLAY -->
+    <div id="auth-overlay" class="auth-overlay-container">
+        <div class="auth-card parchment-card">
+            <div class="sidebar-header">
+                <div class="crest-container"><div class="nepal-crest rotate-crest"></div></div>
+                <h2>RANAS OF NEPAL</h2>
+                <p class="subtitle">Court Gatehouse Portal</p>
+            </div>
+            
+            <p class="auth-tagline" style="font-family:'Spectral'; font-size:13px; text-align:center; color:var(--parchment-text); margin: 12px 0 20px 0;">
+                "Authenticate your noble lineage to access the Hanuman Dhoka Sandbox chambers."
+            </p>
+            
+            <div class="auth-form">
+                <div class="hud-item" style="margin-bottom:12px;">
+                    <label class="hud-label"><span>👤 Courtier Name</span></label>
+                    <input type="text" id="auth-username" class="auth-input" placeholder="Enter noble name...">
+                </div>
+                
+                <div class="hud-item" style="margin-bottom:12px;">
+                    <label class="hud-label"><span>🔑 Seal Passcode</span></label>
+                    <input type="password" id="auth-password" class="auth-input" placeholder="Enter seal code...">
+                </div>
+                
+                <div class="hud-item" style="margin-bottom:20px;">
+                    <label class="hud-label"><span>🏛️ Court Faction Origin</span></label>
+                    <select id="auth-faction" class="auth-input">
+                        <option value="military">💂 General of the Army (Military)</option>
+                        <option value="bhardar">🎭 Noble Lord of the Council (Bhardars)</option>
+                        <option value="royal">👑 Royal Court Diplomat (Crown)</option>
+                    </select>
+                </div>
+                
+                <div id="auth-message" class="auth-msg-label"></div>
+                
+                <div class="auth-buttons-row" style="display:flex; gap:10px; margin-top:10px;">
+                    <button class="combat-btn attack-btn" style="flex:1;" onclick="handleAuthAction('login')">ENTER COURT</button>
+                    <button class="combat-btn parry-btn" style="flex:1;" onclick="handleAuthAction('register')">REGISTER SEAL</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <!-- SIDEBAR: FACTIONS COURT & NPC LIVE REGISTRY -->
+        <aside class="sidebar parchment-card">
+            <div class="sidebar-header">
+                <div class="crest-container"><div class="nepal-crest"></div></div>
+                <h2>HANUMAN DHOKA</h2>
+                <p class="subtitle">Living District Sandbox</p>
+                <button id="logout-btn" class="tod-btn" style="margin-top:8px; font-size:9px; border-color:var(--red-bright); color:var(--red-bright);" onclick="handleLogout()">👤 LEAVE COURT (LOGOUT)</button>
+            </div>
+
+            <!-- PLAYER HUD status -->
+            <section class="status-hud">
+                <div class="hud-item">
+                    <div class="hud-label"><span>❤️ HEALTH</span> <span id="health-val">100 / 100</span></div>
+                    <div class="bar-container"><div class="bar health-bar" style="width: 100%;"></div></div>
+                </div>
+                <div class="hud-item">
+                    <div class="hud-label"><span>⚡ STAMINA</span> <span id="stamina-val">100 / 100</span></div>
+                    <div class="bar-container"><div class="bar stamina-bar" style="width: 100%;"></div></div>
+                </div>
+                <div class="hud-item">
+                    <div class="hud-label"><span>⚔️ ACTIVE WEAPON</span> <span id="equipped-val" class="gold-text">UNARMED</span></div>
+                </div>
+                <div class="hud-item">
+                    <div class="hud-label"><span>🐎 EQUINE MOUNT</span> <span id="mount-val" class="text-muted">DISMOUNTED</span></div>
+                </div>
+            </section>
+
+            <hr class="gold-divider">
+
+            <!-- FACTIONS PANEL -->
+            <section class="factions-hud">
+                <h3>🏛️ ROYAL FACTIONS</h3>
+                <!-- Faction Cards with compact layouts -->
+                <div class="faction-card" id="faction-royal">
+                    <div class="faction-name"><span>👑 Royal Court (Queen Rajya Lakshmi)</span></div>
+                    <div class="metric-row">
+                        <div class="metric"><span>Trust</span><span class="m-val" id="royal-trust">60%</span></div>
+                        <div class="metric"><span>Fear</span><span class="m-val" id="royal-fear">10%</span></div>
+                        <div class="metric"><span>Respect</span><span class="m-val" id="royal-respect">40%</span></div>
+                    </div>
+                    <div class="bar-container"><div class="bar faction-bar" id="royal-bar" style="width: 50%;"></div></div>
+                </div>
+
+                <div class="faction-card" id="faction-bhardars">
+                    <div class="faction-name"><span>🎭 Bhardars (Nobles)</span></div>
+                    <div class="metric-row">
+                        <div class="metric"><span>Trust</span><span class="m-val" id="bhardar-trust">30%</span></div>
+                        <div class="metric"><span>Fear</span><span class="m-val" id="bhardar-fear">20%</span></div>
+                        <div class="metric"><span>Respect</span><span class="m-val" id="bhardar-respect">50%</span></div>
+                    </div>
+                    <div class="bar-container"><div class="bar faction-bar" id="bhardar-bar" style="width: 33%;"></div></div>
+                </div>
+
+                <div class="faction-card" id="faction-military">
+                    <div class="faction-name"><span>💂 Royal Nepalese Army</span></div>
+                    <div class="metric-row">
+                        <div class="metric"><span>Trust</span><span class="m-val" id="military-trust">50%</span></div>
+                        <div class="metric"><span>Fear</span><span class="m-val" id="military-fear">0%</span></div>
+                        <div class="metric"><span>Respect</span><span class="m-val" id="military-respect">70%</span></div>
+                    </div>
+                    <div class="bar-container"><div class="bar faction-bar" id="military-bar" style="width: 60%;"></div></div>
+                </div>
+            </section>
+
+            <hr class="gold-divider">
+
+            <!-- NPC LIVE REGISTRY AND SCHEDULES -->
+            <section class="npc-registry-section">
+                <h3>💂 NPC LIVE SCHEDULE REGISTRY</h3>
+                <p class="description">Palace citizens follow real-time work/patrol schedules.</p>
+                <div class="npc-grid" id="npc-registry-wrapper">
+                    <!-- Injected via JavaScript -->
+                </div>
+            </section>
+        </aside>
+
+        <!-- MAIN DASHBOARD CONTENT -->
+        <main class="main-content">
+            <!-- TIME OF DAY & WEATHER BAR -->
+            <header class="main-header glass-card">
+                <div class="header-titles">
+                    <h1>RANAS OF NEPAL</h1>
+                    <p class="tagline">Living open-world sandbox • Hanuman Dhoka palace slice</p>
+                </div>
+                
+                <!-- Time & Weather Widget panels -->
+                <div class="environment-widget">
+                    <div class="widget-row">
+                        <span>🕒 TIME OF DAY:</span>
+                        <span id="tod-display" class="gold-text">12:00 (MIDDAY)</span>
+                    </div>
+                    <div class="tod-buttons">
+                        <button class="tod-btn" onclick="setTimeOfDay(6)">DAWN</button>
+                        <button class="tod-btn" onclick="setTimeOfDay(12)">NOON</button>
+                        <button class="tod-btn" onclick="setTimeOfDay(18)">DUSK</button>
+                        <button class="tod-btn" onclick="setTimeOfDay(23)">NIGHT</button>
+                    </div>
+                    <div class="weather-buttons">
+                        <span>🌧️ WEATHER:</span>
+                        <button class="tod-btn" onclick="setWeather('clear')">CLEAR</button>
+                        <button class="tod-btn" onclick="setWeather('monsoon')">MONSOON</button>
+                        <button class="tod-btn" onclick="setWeather('fog')">FOG</button>
+                    </div>
+                </div>
+
+                <div class="threat-status-badge">
+                    <div class="badge-title">POLITICAL THREAT LEVEL</div>
+                    <div class="threat-stars" id="threat-stars-hud">⭐⭐⭐⭐⭐</div>
+                    <div class="threat-alert" id="threat-alert-hud">ALL CLEAR</div>
+                </div>
+            </header>
+
+            <!-- INTERACTIVE PALACE DISTRICT MAP -->
+            <section class="map-section glass-card">
+                <h2>🗺️ DISTRICT EXPLORATION (INTERACTIVE PALACE MAP)</h2>
+                <p class="description">Click on a district below to explore, update coordinates, and trigger local random events!</p>
+                
+                <div class="map-container">
+                    <div class="map-district" id="district-bazaar" onclick="travelToDistrict('bazaar')">
+                        <div class="district-overlay"></div>
+                        <h4>TALEJU BAZAAR</h4>
+                        <p>Merchant stalls, temple bells, trading roads.</p>
+                        <span class="coord-label">Coords: X: -120, Y: 450</span>
+                    </div>
+                    
+                    <div class="map-district" id="district-court" onclick="travelToDistrict('court')">
+                        <div class="district-overlay"></div>
+                        <h4>KOT COURTYARD</h4>
+                        <p>Historic stone courtyard, guard barracks.</p>
+                        <span class="coord-label">Coords: X: 15, Y: -30</span>
+                    </div>
+
+                    <div class="map-district" id="district-palace" onclick="travelToDistrict('palace')">
+                        <div class="district-overlay"></div>
+                        <h4>PALACE INTERIORS</h4>
+                        <p>Torch-lit royal corridors, Bhardar cabins.</p>
+                        <span class="coord-label">Coords: X: 220, Y: -180</span>
+                    </div>
+
+                    <div class="map-district" id="district-safehouse" onclick="travelToDistrict('safehouse')">
+                        <div class="district-overlay"></div>
+                        <h4>SOVEREIGN SAFEHOUSE</h4>
+                        <p>Secured retreat, weapons chest, hiding quarters.</p>
+                        <span class="coord-label">Coords: X: -420, Y: -380</span>
+                    </div>
+                </div>
+                
+                <!-- DISTRICT ACTIVE HUDS -->
+                <div class="district-details-hud parchment-bg">
+                    <span class="gold-text" id="active-district-title">EXPLORING: TALEJU BAZAAR</span>
+                    <p id="active-district-desc" class="narrative-text" style="font-size: 14px; margin-top: 6px;">
+                        The bells of Taleju temple chime as street merchants sell brass pots, spices, and khukuris. Nobles whisper in groups under the carved wooden windows.
+                    </p>
+                </div>
+            </section>
+
+            <!-- PLAYABLE VERTICAL SLICE STORY MISSION -->
+            <section class="story-engine-section glass-card">
+                <div class="section-title-bar">
+                    <h2>🎮 VERTICAL SLICE STORY MISSION</h2>
+                    <span class="chapter-badge" id="mission-status-badge">MISSION DEPLOYED</span>
+                </div>
+
+                <div class="chapter-container">
+                    <div class="story-scroll parchment-bg">
+                        <div class="scroll-border top"></div>
+                        <div class="narrative-body">
+                            <h3 id="quest-stage-title" class="gold-text" style="font-family:'Cinzel';">STAGE 1: MOUNT THE EQUINE STEED</h3>
+                            <blockquote class="cinematic-quote" id="story-quote">
+                                "A general seizes gates, but a master diplomat seizes the city from horseback."
+                            </blockquote>
+                            <p class="narrative-text" id="story-narrative">
+                                Kathmandu, 1845. Conspiracies surrounding PM Gagan Singh are escalating. To uncover the plans of the rival Pande nobles, you must infiltrate the sealed Palace compound. First, mount your equine steed at the Safehouse outposts and ride towards the Taleju Bazaar checkpoints.
+                            </p>
+                        </div>
+                        <div class="scroll-border bottom"></div>
+                    </div>
+
+                    <div class="choice-container">
+                        <h3>ACTIVE OBJECTIVE: <span id="current-objective-label" class="gold-text">Mount the horse vehicle</span></h3>
+                        <div class="choices-grid" id="choices-wrapper">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TRADITIONAL SIDE ACTIVITIES & KAUDA GAMBLING -->
+            <section class="activities-section glass-card">
+                <h2>🎲 DISTRICT ACTIVITIES & NEPALESE KAUDA</h2>
+                <p class="description">Live in the Rana-era world. Play traditional cowrie shell gambling, sword duel rivals, or race mounts.</p>
+                
+                <div class="activities-layout">
+                    <!-- KAUDA BOARD -->
+                    <div class="kauda-board glass-card">
+                        <div class="kauda-header">
+                            <h4>🐚 NEPALESE KAUDA (COWRIE SHELLS)</h4>
+                            <span class="coord-label">Traditional Gambling Game</span>
+                        </div>
+                        <div class="kauda-status">
+                            <span>Balance: <strong id="kauda-balance" class="gold-text">500 Gold Coins</strong></span>
+                        </div>
+                        <div class="cowrie-container" id="cowrie-grid">
+                            <!-- 16 Cowrie Shells rendered here dynamically -->
+                        </div>
+                        <div class="kauda-bet-inputs">
+                            <label>BET RESULT: </label>
+                            <select id="kauda-bet-type">
+                                <option value="even">EVEN Face-Up Shells (2x Win)</option>
+                                <option value="odd">ODD Face-Up Shells (2x Win)</option>
+                                <option value="exact8">EXACTLY 8 Face-Up Shells (5x Win)</option>
+                                <option value="exact12">EXACTLY 12 Face-Up Shells (10x Win)</option>
+                            </select>
+                            <input type="number" id="kauda-bet-amount" value="50" min="10" max="500">
+                        </div>
+                        <button class="combat-btn attack-btn" style="width: 100%; margin-top: 12px;" onclick="playKaudaGame()">🎲 THROW COWRIES</button>
+                    </div>
+
+                    <!-- SWORD DUEL ARENA -->
+                    <div class="duel-arena glass-card">
+                        <h4>⚔️ TEMPLE DUELING ARENA</h4>
+                        <p class="description" style="margin-bottom:10px;">Select a sparring opponent and trigger direct C++ sweep sparring.</p>
+                        
+                        <div class="duel-opponents">
+                            <div class="opponent-row active" id="opp-guard" onclick="selectDuelOpponent('guard')">
+                                <span>💂 Royal Gate Guard (Medium)</span>
+                            </div>
+                            <div class="opponent-row" id="opp-pande" onclick="selectDuelOpponent('pande')">
+                                <span>🎭 Rival Kaji Prithvi Pande (Hard)</span>
+                            </div>
+                        </div>
+                        
+                        <div class="arena-controls">
+                            <button class="combat-btn attack-btn" onclick="performDuelAction('attack')">🗡️ STRIKE</button>
+                            <button class="combat-btn parry-btn" onclick="performDuelAction('parry')">🛡️ PARRY</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TRADITIONAL ARMORY -->
+            <section class="armory-section glass-card">
+                <h2>⚔️ ROYAL NEPALESE ARMORY (COMBAT DECK)</h2>
+                <div class="weapon-grid">
+                    <div class="weapon-card" id="weapon-khukuri" onclick="selectWeapon('khukuri')">
+                        <div class="weapon-icon khukuri-icon"></div>
+                        <h4>GURKHA KHUKURI</h4>
+                        <p class="weapon-desc">Iconic curved blade. Rapid and close combat sweeps.</p>
+                        <div class="weapon-stats"><span>🗡️ DMG: 25</span><span>🎯 REACH: 1.2m</span></div>
+                        <div class="draw-btn">DRAW BLADE</div>
+                    </div>
+
+                    <div class="weapon-card" id="weapon-talwar" onclick="selectWeapon('talwar')">
+                        <div class="weapon-icon talwar-icon"></div>
+                        <h4>NEPALESE TALWAR</h4>
+                        <p class="weapon-desc">Cavalry sword. Broad sweeps, heavy defensive blocks.</p>
+                        <div class="weapon-stats"><span>🗡️ DMG: 40</span><span>🎯 REACH: 1.8m</span></div>
+                        <div class="draw-btn">DRAW SWORD</div>
+                    </div>
+
+                    <div class="weapon-card" id="weapon-kora" onclick="selectWeapon('kora')">
+                        <div class="weapon-icon kora-icon"></div>
+                        <h4>SACRIFICIAL KORA</h4>
+                        <p class="weapon-desc">Curved execution blade. Brutal power triggers.</p>
+                        <div class="weapon-stats"><span>🗡️ DMG: 65</span><span>🎯 REACH: 1.6m</span></div>
+                        <div class="draw-btn">DRAW KORA</div>
+                    </div>
+
+                    <div class="weapon-card" id="weapon-musket" onclick="selectWeapon('musket')">
+                        <div class="weapon-icon musket-icon"></div>
+                        <h4>FLINTLOCK RIFLE</h4>
+                        <p class="weapon-desc">British flintlock. Thunderous ranged damage sweeps.</p>
+                        <div class="weapon-stats"><span>🗡️ DMG: 90</span><span>🎯 REACH: 30.0m</span></div>
+                        <div class="draw-btn">LOAD MUSKET</div>
+                    </div>
+                </div>
+
+                <!-- COMBAT LOG AND FEED -->
+                <div class="combat-simulator">
+                    <div class="combat-log-container" style="width: 100%;">
+                        <div class="log-title">REAL-TIME SANDBOX CONSOLE & COMPILER SIGNALS</div>
+                        <div class="combat-log" id="combat-log-feed">
+                            <div class="log-entry system">[SYSTEM]: Living Hanuman Dhoka Palace District environment loaded successfully...</div>
+                            <div class="log-entry system">[SYSTEM]: Unreal Engine 5 World Subsystem UQuestMissionManager active.</div>
+                            <div class="log-entry">[WORLD]: Explore the map, ride horses, and maintain political control.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SOUNDBOARD -->
+            <section class="soundboard-section glass-card">
+                <h2>🎵 CINEMATIC ATMOSPHERE SOUNDBOARD</h2>
+                <div class="sound-grid">
+                    <div class="track-card" id="track-rain">
+                        <div class="track-info"><span class="track-symbol">🌧️</span><div><h5>Himalayan Torrent</h5><p>Rain & Thunder Synthesizer</p></div></div>
+                        <button class="play-btn" onclick="toggleTrack('rain')">PLAY</button>
+                    </div>
+
+                    <div class="track-card" id="track-sarangi">
+                        <div class="track-info"><span class="track-symbol">🎻</span><div><h5>Sarangi Whispers</h5><p>Traditional string raga</p></div></div>
+                        <button class="play-btn" onclick="toggleTrack('sarangi')">PLAY</button>
+                    </div>
+
+                    <div class="track-card" id="track-flute">
+                        <div class="track-info"><span class="track-symbol">💨</span><div><h5>Himalayan Breath</h5><p>Haunting Bansuri flutes</p></div></div>
+                        <button class="play-btn" onclick="toggleTrack('flute')">PLAY</button>
+                    </div>
+
+                    <div class="track-card" id="track-drums">
+                        <div class="track-info"><span class="track-symbol">🥁</span><div><h5>Rana War Drums</h5><p>Madal & orchestral sweeps</p></div></div>
+                        <button class="play-btn" onclick="toggleTrack('drums')">PLAY</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- FOOTER WITH ACHIEVEMENTS & C++ CODE LINKS -->
+    <footer class="game-footer">
+        <div class="achievements-bar">
+            <span>🏆 ACHIEVEMENTS IN CONSOLE:</span>
+            <div class="achievements-badges">
+                <span class="achievement-pill locked" id="ach-mount">MOUNT MASTER</span>
+                <span class="achievement-pill locked" id="ach-spy">SPY CATCHER</span>
+                <span class="achievement-pill locked" id="ach-infiltration">HANUMAN INFILTRATOR</span>
+                <span class="achievement-pill locked" id="ach-gambler">KAURA MASTER</span>
+            </div>
+        </div>
+        <div class="links-bar">
+            <span>UNREAL ENGINE 5 C++ CODEFILES:</span>
+            <a href="file:///c:/Users/LENOVO/OneDrive/Desktop/Cyber/UE5_Project/Source/HistoricalRana/Public/AHorseVehicle.h" target="_blank">HorseVehicle.h</a> |
+            <a href="file:///c:/Users/LENOVO/OneDrive/Desktop/Cyber/UE5_Project/Source/HistoricalRana/Public/ANpcCitizenCharacter.h" target="_blank">CitizenCharacter.h</a> |
+            <a href="file:///c:/Users/LENOVO/OneDrive/Desktop/Cyber/UE5_Project/Source/HistoricalRana/Public/APoliticalThreatSystem.h" target="_blank">ThreatSystem.h</a> |
+            <a href="file:///c:/Users/LENOVO/OneDrive/Desktop/Cyber/UE5_Project/Source/HistoricalRana/Public/UQuestMissionManager.h" target="_blank">MissionManager.h</a>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
