@@ -1,42 +1,36 @@
-# 🏛️ Ranas of Nepal: Hanuman Dhoka Living District Sandbox
+# 🏛️ Ranas of Nepal: Hanuman Dhoka Sandbox
 
-A premium, highly-immersive open-world vertical slice and interactive companion app set during the rise of **Jung Bahadur Rana** in 19th-century Nepal. Inspired by high-fidelity gameplay loops like *Ghost of Tsushima*, *Assassin's Creed*, and *GTA*, this project blends advanced Unreal Engine 5 C++ subsystems with a glassmorphic HTML5 client-side dashboard sandbox.
-
----
-
-## 🎮 Interactive Web Companion & Sandbox
-The companion app serves as an interactive demonstration of the open-world mechanics, running completely serverless and client-side (built on HSL color systems, Web Audio API, and persistent storage):
-
-* **Secure Faction Gateway**: Immersive login and registration overlay allowing courtiers to authenticate their noble lineage.
-* **Persistent Lineage Stats**: Automatically saves and loads your gold, health, equipped armaments, active quest stage, and unlocked achievements directly using browser storage (`localStorage` and `sessionStorage`).
-* **Intruder Alert System**: Entering an incorrect password signals the palace guards, raising the wanted level by **15 points** and triggering combat warnings.
-* **Interactive Palace Map**: Explore *Taleju Bazaar*, *Kot Courtyard*, *Palace Interiors*, and the *Safehouse* with real-time random encounter checks.
-* **Authentic Nepalese Kauda**: A physical cowrie shell gambling board allowing you to place stakes on traditional face-up shell bets.
-* **Temple Sparring Arena**: Spar with Royal Guard captains or rival nobles, compiling real-time strike and parry log traces.
-* **Procedural Soundboard Synthesizers**:
-  * *Himalayan Torrent*: Low-pass filtered procedural rain with periodic rolling thunder.
-  * *Sarangi Whispers*: Micro-tonal string raga slides playing minor scales.
-  * *Himalayan Breath*: Mellow Bansuri flute solos with vibratos.
-  * *Rana War Drums*: 110 BPM low-pass kick drum and woodblock Madal rhythms.
+A premium open-world vertical slice companion app set during the rise of **Jung Bahadur Rana** in 19th-century Nepal. Blends modular Unreal Engine 5 C++ subsystems with a glassmorphic HTML5 client-side dashboard sandbox.
 
 ---
 
-## 🏛️ Unreal Engine 5 C++ Core Systems
-The repository contains modular C++ classes designed for easy integration into an active UE5 project:
-* **`AProtagonistCharacter`**: Controls weapon switches (Gurkha Khukuris, cavalry Talwars, heavy sacrificial Koras, flintlock Muskets), stamina scaling, blocking states, and active input bindings.
-* **`AHorseVehicle`**: A physics-driven rideable mount controller managing galloping, equine stamina, and skeletal attachment snapping.
-* **`ANpcCitizenCharacter`**: A dynamic citizen AI class shifting state machines among four specific routines (*Work*, *Gossip*, *Patrol*, *Rest*) based on the Time of Day clock.
-* **`APoliticalThreatSystem`**: Monitors player threat points (0-100) and shifts world parameters (double patrol counts, lock gates, checkpoints, treason hunt status) across five distinct tiers.
-* **`UQuestMissionManager`**: World Subsystem managing quest milestones, dialogue, waypoint coordinates, and reward distribution.
+## 🎮 Web Companion Sandbox
+Runs serverless and client-side using native HSL color systems, Web Audio API, and local storage:
+
+* **Secure Faction Gateway**: Faction selection and parchment-style gatehouse login.
+* **Persistent Lineage Stats**: Auto-saves gold, health, weaponry, quest stage, and achievements to `localStorage`.
+* **Intruder Alert System**: Entering an incorrect passcode increases the wanted threat level by **15 points**.
+* **Interactive District Map**: Explore Taleju Bazaar, Kot Courtyard, Palace, and Safehouse with random encounters.
+* **Authentic Kauda**: Physics-based cowrie shell gambling board with traditional bets.
+* **Dueling Arena**: Spar against guard captains using real-time strike and parry console logs.
+* **Procedural Synthesizers**: Real-time Web Audio synths representing monsoon torrents, classical D-minor Sarangi ragas, Bansuri flutes, and Madal war drums.
 
 ---
 
-## 🌐 Instant Free Deployment
-Because the companion app is static, you can deploy it to **Render**, **Netlify**, or **Vercel** with zero backend database dependencies.
+## 🏛️ Unreal Engine 5 C++ Systems
+Located under `Source/HistoricalRana/` for modular UE5 integration:
+* **`AProtagonistCharacter`**: Controls weapon swings, blocking, sprinting, and inventory slots.
+* **`AHorseVehicle`**: A physics-driven rideable mount controller with galloping stamina.
+* **`ANpcCitizenCharacter`**: Scheduled AI routines (*Work*, *Gossip*, *Patrol*, *Rest*) linked to the Time of Day clock.
+* **`APoliticalThreatSystem`**: Escalates wanted stars, closes palace gates, and spawns checkposts.
+* **`UQuestMissionManager`**: World Subsystem managing the 5 quest stages of the Kot Massacre story.
 
-### Deploy to Render:
-1. Log in to your [Render Dashboard](https://dashboard.render.com).
-2. Click **New +** and select **Static Site**.
-3. Connect this GitHub repository.
-4. Leave **Build Command** blank, and set **Publish Directory** to `.` (or `ShowcaseApp` depending on your directory structure).
-5. Click **Create Static Site** to go live!
+---
+
+## 🚀 Deployment (Zero-Config)
+Since the app has **zero `.env` dependencies**, you can host it for free on **Render**, **Netlify**, or **Vercel** in seconds:
+
+1. Create a **Static Site** on Render.
+2. Link your GitHub repository (`kailashkunwar45/jungaGame`).
+3. Leave **Build Command** blank.
+4. Set **Publish Directory** to `.` and deploy!
