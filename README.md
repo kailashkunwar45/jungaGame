@@ -24,13 +24,3 @@ Located under `Source/HistoricalRana/` for modular UE5 integration:
 * **`ANpcCitizenCharacter`**: Scheduled AI routines (*Work*, *Gossip*, *Patrol*, *Rest*) linked to the Time of Day clock.
 * **`APoliticalThreatSystem`**: Escalates wanted stars, closes palace gates, and spawns checkposts.
 * **`UQuestMissionManager`**: World Subsystem managing the 5 quest stages of the Kot Massacre story.
-
----
-
-## 🚀 Deployment (Zero-Config)
-Since the app has **zero `.env` dependencies**, you can host it for free on **Render**, **Netlify**, or **Vercel** in seconds:
-
-1. Create a **Static Site** on Render.
-2. Link your GitHub repository (`kailashkunwar45/jungaGame`).
-3. Leave **Build Command** blank.
-4. Set **Publish Directory** to `.` and deploy!
